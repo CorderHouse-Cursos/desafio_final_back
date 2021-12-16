@@ -1,7 +1,9 @@
 import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
-import indexRoutes from './routes/v1/indexRoutes'
+
+import cartRoutes from './routes/v1/cartRoutes'
+import productsRoutes from './routes/v1/productsRoutes'
 
 const app = express()
 
@@ -9,6 +11,9 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use('/api/v1/', indexRoutes)
+app.use('/', express.static(`${__dirname}/public`))
+
+app.use('/api/productos', productsRoutes)
+app.use('/api/carrito', cartRoutes)
 
 export default app

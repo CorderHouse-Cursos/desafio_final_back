@@ -1,0 +1,14 @@
+{
+	"isAdmin": true,
+	"products": [
+		{
+			"nombre": "producto1",
+			"descripcion": "Producto 1",
+			"codigo": "COD-10",
+			"precio": "12354",
+			"stock": "1",
+			"foto": "http://localhost:3000/uploads/foto-1639619283946.png",
+			"id": 1
+		}
+	]
+}

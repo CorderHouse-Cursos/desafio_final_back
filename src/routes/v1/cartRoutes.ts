@@ -3,6 +3,6 @@ import indexController from '../../controllers/indexController'
 
 const router = Router()
 
-router.get('/', indexController.index)
+router.post('/', indexController.index)
 
 export default router
