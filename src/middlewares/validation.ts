@@ -1,5 +1,7 @@
 import { NextFunction, Response, Request } from 'express'
+import { ICarts } from '../models/Carts'
 import { IProducts } from '../models/Products'
+import DataManager from '../services/DataManager'
 import STATUSCODE from '../utils/statusCode'
 
 export const productValidate = (
@@ -55,6 +57,57 @@ export const productValidate = (
 export const idValidate = (req: Request, res: Response, next: NextFunction) => {
 	if (!req.params.id && typeof req.params.id !== 'number') {
 		res.status(STATUSCODE.OK).json({ message: 'El id debe ser un número' })
+	}
+
+	next()
+}
+
+export const idProductValidate = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const productManager = new DataManager<IProducts>('products')
+	try {
+		productManager.getById(parseInt(req.params.id))
+	} catch (err) {
+		res
+			.status(STATUSCODE.NOT_FOUND)
+			.json({ message: 'No existe un producto con esa ID' })
+	}
+	next()
+}
+
+export const idCartValidate = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const cartManager = new DataManager<ICarts>('carts')
+	try {
+		const cart = cartManager.getById(parseInt(req.params.id))
+	} catch (err) {
+		res
+			.status(STATUSCODE.NOT_FOUND)
+			.json({ message: 'No existe un carrito con esa ID' })
+	}
+
+	next()
+}
+export const idCartProductsAddValidate = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const productManager = new DataManager<IProducts>('products')
+	next()
+	try {
+		const pro = productManager.getById(parseInt(req.params.productId))
+		console.log(pro)
+	} catch (err) {
+		res
+			.status(STATUSCODE.NOT_FOUND)
+			.json({ message: 'No existe un producto con ese Id' })
 	}
 	next()
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { IProducts } from '../models/Products'
-import DataManager from '../utils/DataManager'
+import DataManager from '../services/DataManager'
 import STATUSCODE from '../utils/statusCode'
 import * as constants from '../utils/constants'
 
@@ -20,13 +20,15 @@ export default {
 		const photo = req.files as Express.Multer.File[]
 		const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
 		product.foto = path
+		product.timestamp = new Date()
 		productManager.create(product)
 		res.status(STATUSCODE.CREATED).json({ message: 'Producto creado', product })
 	},
 	update: (req: Request, res: Response) => {
 		const product = req.body as IProducts
-		const photo = req.file as Express.Multer.File
-		const path = `${constants.SERVER_URL}/uploads/${photo.filename}`
+		const photo = req.files as Express.Multer.File[]
+		const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
+
 		product.foto = path
 		productManager.update(parseInt(req.params.id), product)
 		res.status(STATUSCODE.OK).json({ message: 'Producto actualizado', product })
