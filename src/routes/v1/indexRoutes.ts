@@ -1,8 +1,9 @@
-import Router from 'express'
-import indexController from '../../controllers/indexController'
-
+import Router, { Request, Response } from 'express'
+import getIsAdmin from '../../utils/getIsAdmin'
 const router = Router()
 
-router.get('/', indexController.index)
+router.get('/', (req: Request, res: Response) => {
+	res.json({ admin: getIsAdmin() })
+})
 
 export default router
