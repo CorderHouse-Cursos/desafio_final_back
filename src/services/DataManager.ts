@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import IData from '../models/Data'
-
+import { NotFound } from '../utils/errors'
 export default class DataManager<T extends IData> {
 	private file: string
 	private data: T[] = []
@@ -29,7 +29,7 @@ export default class DataManager<T extends IData> {
 
 	public getAll(): T[] {
 		if (this.data === undefined) {
-			throw new Error('No hay datos')
+			return []
 		}
 
 		return this.data
@@ -37,19 +37,19 @@ export default class DataManager<T extends IData> {
 
 	public getById(id: number): T {
 		if (this.data === undefined) {
-			throw new Error('No hay datos')
+			throw new NotFound('No se encontró el elemento')
 		}
 
 		const index = this.data.findIndex((item) => item.id == id)
 		if (index === -1) {
-			throw new Error('No se encontró el elemento')
+			throw new NotFound('No se encontró el elemento')
 		}
 		return this.data[index]
 	}
 
 	public create(data: T): number {
 		if (this.data === undefined) {
-			throw new Error('No hay datos')
+			throw new NotFound('No se encontró el elemento')
 		}
 		const id = this.data.length > 0 ? this.data[this.data.length - 1].id + 1 : 1
 		this.data.push({ ...data, id })
@@ -59,12 +59,12 @@ export default class DataManager<T extends IData> {
 
 	public update(id: number, data: T): void {
 		if (this.data === undefined) {
-			throw new Error('No hay datos')
+			throw new NotFound('No se encontró el elemento')
 		}
 
 		const index = this.data.findIndex((item) => item.id == id)
 		if (index === -1) {
-			throw new Error('No se encontró el elemento')
+			throw new NotFound('No se encontró el elemento')
 		}
 		const oldData = this.data[index]
 		this.data[index] = { ...oldData, ...data, id }
@@ -73,12 +73,12 @@ export default class DataManager<T extends IData> {
 	}
 	public delete(id: number): void {
 		if (this.data === undefined) {
-			throw new Error('No hay datos')
+			throw new NotFound('No se encontró el elemento')
 		}
 
 		const index = this.data.findIndex((item) => item.id == id)
 		if (index === -1) {
-			throw new Error('No se encontró el elemento')
+			throw new NotFound('No se encontró el elemento')
 		}
 		this.data.splice(index, 1)
 		this._saveData()

@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import cartRoutes from './routes/v1/cartRoutes'
 import productsRoutes from './routes/v1/productsRoutes'
-
+import { errorHandler } from './middlewares/errorHandler'
 const app = express()
 
 app.use(morgan('dev'))
@@ -15,5 +15,5 @@ app.use('/', express.static(`${__dirname}/public`))
 
 app.use('/api/productos', productsRoutes)
 app.use('/api/carrito', cartRoutes)
-
+app.use(errorHandler)
 export default app
