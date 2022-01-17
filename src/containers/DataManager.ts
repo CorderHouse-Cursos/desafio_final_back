@@ -36,7 +36,7 @@ export default class DataManager<T extends IData> {
 		return this.data
 	}
 
-	public getById(id: number): T {
+	public getById(id: number | string): T {
 		if (this.data === undefined) {
 			throw new NotFound('No se encontró el elemento')
 		}
@@ -52,13 +52,16 @@ export default class DataManager<T extends IData> {
 		if (this.data === undefined) {
 			throw new NotFound('No se encontró el elemento')
 		}
-		const id = this.data.length > 0 ? this.data[this.data.length - 1].id + 1 : 1
+		const id =
+			this.data.length > 0
+				? (this.data[this.data.length - 1].id as number) + 1
+				: 1
 		this.data.push({ ...data, id })
 		this._saveData()
 		return id
 	}
 
-	public update(id: number, data: T): void {
+	public update(id: string | number, data: T): void {
 		if (this.data === undefined) {
 			throw new NotFound('No se encontró el elemento')
 		}

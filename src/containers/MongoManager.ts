@@ -14,7 +14,7 @@ export class MongoManager<T extends IData> {
 		return await this.model.find()
 	}
 
-	public async getById(id: number): Promise<any> {
+	public async getById(id: number | string): Promise<any> {
 		const data = this.model.findOne({ id })
 		return data
 	}
@@ -23,13 +23,14 @@ export class MongoManager<T extends IData> {
 		if (data === undefined) {
 			throw new NotFound('No se encontró el elemento')
 		}
+
 		const newData = new this.model(data)
-		console.log(newData)
+
 		const dataSaved = await newData.save()
 		return dataSaved.id
 	}
 
-	public async update(id: number, data: T): Promise<void> {
+	public async update(id: number | string, data: T): Promise<void> {
 		const updated = await this.model.findOneAndUpdate({ id }, data, {
 			new: true,
 		})

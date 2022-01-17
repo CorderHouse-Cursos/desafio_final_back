@@ -1,23 +1,19 @@
-import DataManager from '../containers/DataManager'
-import { MongoManager } from '../containers/MongoManager'
 import { IProducts, ProductosModel } from '../models/Products'
+import { initManager } from '../utils/manager'
 
-const local = false
-const productManager = local
-	? new DataManager<IProducts>('products')
-	: new MongoManager<IProducts>('products', ProductosModel)
+const productManager = initManager<IProducts>('products', ProductosModel)
 
 export class ProductDao {
 	public async getAll(): Promise<IProducts[]> {
 		return await productManager.getAll()
 	}
-	public async getById(id: number): Promise<IProducts> {
+	public async getById(id: number | string): Promise<IProducts> {
 		return await productManager.getById(id)
 	}
-	public async create(data: IProducts): Promise<number> {
+	public async create(data: IProducts): Promise<number | string> {
 		return await productManager.create(data)
 	}
-	public async update(id: number, data: IProducts): Promise<void> {
+	public async update(id: string | number, data: IProducts): Promise<void> {
 		await productManager.update(id, data)
 	}
 	public async delete(id: number): Promise<void> {

@@ -19,7 +19,7 @@ export default {
 	},
 	getById: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const product = await productManager.getById(parseInt(req.params.id))
+			const product = await productManager.getById(req.params.id)
 			res.status(STATUSCODE.OK).json(product)
 		} catch (err) {
 			next(err)

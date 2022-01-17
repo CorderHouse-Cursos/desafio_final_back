@@ -15,8 +15,10 @@ export default {
 	) => {
 		try {
 			const cart = await cartManager.getById(parseInt(req.params.id))
+			console.log(cart)
 			res.status(STATUSCODE.OK).json(cart)
 		} catch (err) {
+			console.log(err)
 			next(err)
 		}
 	},
@@ -31,6 +33,7 @@ export default {
 				.status(STATUSCODE.CREATED)
 				.json({ message: 'Carrito creado', data: { id: idCart } })
 		} catch (err) {
+			console.log(err)
 			next(err)
 		}
 	},
@@ -47,13 +50,14 @@ export default {
 		try {
 			const { id, productId } = req.params
 			const idProduct = await productManager.getById(parseInt(productId))
+			console.log(idProduct)
 			console.log(id)
-
-			const cart = await cartManager.getById(parseInt(id))
+			const cart = await cartManager.getById(id)
+			console.log('PRODUCTOS', cart.products)
 			await cartManager.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,
-				products: [...cart.products, idProduct],
+				products: [idProduct],
 			})
 			res.status(STATUSCODE.OK).json({ message: 'Producto agregado con exito' })
 		} catch (err) {

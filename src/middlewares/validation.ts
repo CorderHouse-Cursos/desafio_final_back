@@ -1,8 +1,11 @@
 import { NextFunction, Response, Request } from 'express'
-import { ICarts } from '../models/Carts'
-import { IProducts } from '../models/Products'
-import DataManager from '../containers/DataManager'
+import { CartsModel, ICarts } from '../models/Carts'
+import { IProducts, ProductosModel } from '../models/Products'
+import { initManager } from '../utils/manager'
 import STATUSCODE from '../utils/statusCode'
+
+const cartManager = initManager<ICarts>('carts', CartsModel)
+const productManager = initManager<IProducts>('products', ProductosModel)
 
 export const productValidate = (
 	req: Request,
@@ -67,7 +70,6 @@ export const idProductValidate = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const productManager = new DataManager<IProducts>('products')
 	try {
 		productManager.getById(parseInt(req.params.id))
 	} catch (err) {
@@ -83,10 +85,11 @@ export const idCartValidate = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const cartManager = new DataManager<ICarts>('carts')
 	try {
 		const cart = cartManager.getById(parseInt(req.params.id))
+		console.log(cart)
 	} catch (err) {
+		console.log(err)
 		res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un carrito con esa ID' })
@@ -99,7 +102,6 @@ export const idCartProductsAddValidate = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const productManager = new DataManager<IProducts>('products')
 	next()
 	try {
 		const pro = productManager.getById(parseInt(req.params.productId))
