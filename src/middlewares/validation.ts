@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express'
 import { ICarts } from '../models/Carts'
 import { IProducts } from '../models/Products'
-import DataManager from '../services/DataManager'
+import DataManager from '../containers/DataManager'
 import STATUSCODE from '../utils/statusCode'
 
 export const productValidate = (

@@ -1,4 +1,6 @@
 import IData from './Data'
+import mongoose, { Schema } from 'mongoose'
+
 export interface IProducts extends IData {
 	timestamp: Date
 	nombre: string
@@ -8,3 +10,39 @@ export interface IProducts extends IData {
 	precio: number
 	stock: number
 }
+
+const ProductsSchema = new Schema({
+	timestamp: {
+		type: Date,
+		default: Date.now,
+	},
+	nombre: {
+		type: String,
+		required: true,
+	},
+	descripcion: {
+		type: String,
+		required: true,
+	},
+	codigo: {
+		type: String,
+		required: true,
+	},
+	foto: {
+		type: String,
+		required: true,
+	},
+	precio: {
+		type: Number,
+		required: true,
+	},
+	stock: {
+		type: Number,
+		required: true,
+	},
+})
+
+export const ProductosModel = mongoose.model<IProducts>(
+	'Productos',
+	ProductsSchema
+)

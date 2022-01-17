@@ -1,25 +1,28 @@
 import { NextFunction, Request, Response } from 'express'
-import { ICarts } from '../models/Carts'
-import DataManager from '../services/DataManager'
-import STATUSCODE from '../utils/statusCode'
-import * as constants from '../utils/constants'
-import { IProducts } from '../models/Products'
 
-const cartManager = new DataManager<ICarts>('carts')
-const productManager = new DataManager<IProducts>('products')
+import STATUSCODE from '../utils/statusCode'
+
+import { CartsDao, ProductDao } from '../daos'
+
+const cartManager = new CartsDao()
+const productManager = new ProductDao()
 
 export default {
-	getProductsInCartById: (req: Request, res: Response, next: NextFunction) => {
+	getProductsInCartById: async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
 		try {
-			const cart = cartManager.getById(parseInt(req.params.id))
+			const cart = await cartManager.getById(parseInt(req.params.id))
 			res.status(STATUSCODE.OK).json(cart)
 		} catch (err) {
 			next(err)
 		}
 	},
-	createCart: (req: Request, res: Response, next: NextFunction) => {
+	createCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const idCart = cartManager.create({
+			const idCart = await cartManager.create({
 				id: 1,
 				timestamp: new Date(),
 				products: [],
@@ -32,7 +35,7 @@ export default {
 		}
 	},
 
-	deleteCart: (req: Request, res: Response, next: NextFunction) => {
+	deleteCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			cartManager.delete(parseInt(req.params.id))
 			res.status(STATUSCODE.OK).json({ message: 'Carrito eliminado' })
@@ -40,24 +43,31 @@ export default {
 			next(err)
 		}
 	},
-	addProductToCart: (req: Request, res: Response, next: NextFunction) => {
+	addProductToCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const productId = productManager.getById(parseInt(req.params.productId))
-			const cart = cartManager.getById(parseInt(req.params.id))
-			cartManager.update(cart.id, {
+			const { id, productId } = req.params
+			const idProduct = await productManager.getById(parseInt(productId))
+			console.log(id)
+
+			const cart = await cartManager.getById(parseInt(id))
+			await cartManager.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,
-				products: [...cart.products, productId],
+				products: [...cart.products, idProduct],
 			})
 			res.status(STATUSCODE.OK).json({ message: 'Producto agregado con exito' })
 		} catch (err) {
 			next(err)
 		}
 	},
-	deleteProductFromCart: (req: Request, res: Response, next: NextFunction) => {
+	deleteProductFromCart: async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
 		try {
 			const productId = parseInt(req.params.productId)
-			const cart = cartManager.getById(parseInt(req.params.id))
+			const cart = await cartManager.getById(parseInt(req.params.id))
 
 			const cartFiltered = cart.products.filter((pro) => pro.id !== productId)
 			cartManager.update(cart.id, {

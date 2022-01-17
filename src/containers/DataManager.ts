@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import IData from '../models/Data'
 import { NotFound } from '../utils/errors'
+
 export default class DataManager<T extends IData> {
 	private file: string
 	private data: T[] = []
