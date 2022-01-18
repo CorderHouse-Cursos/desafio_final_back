@@ -16,7 +16,7 @@ export class CartsDao {
 	public async update(id: number | string, data: ICarts): Promise<void> {
 		await cartManager.update(id, data)
 	}
-	public async delete(id: number): Promise<void> {
+	public async delete(id: number | string): Promise<void> {
 		await cartManager.delete(id)
 	}
 }

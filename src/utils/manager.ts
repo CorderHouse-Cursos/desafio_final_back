@@ -16,7 +16,7 @@ export function initManager<T extends IData>(
 	model: mongoose.Model<any>
 ) {
 	const database = process.env.DATABASE
-	console.log(`Database: ${database}`)
+
 	switch (database) {
 		case 'mongo':
 			return new MongoManager<T>(name, model)

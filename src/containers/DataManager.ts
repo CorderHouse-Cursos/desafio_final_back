@@ -75,7 +75,7 @@ export default class DataManager<T extends IData> {
 
 		this._saveData()
 	}
-	public delete(id: number): void {
+	public delete(id: number | string): void {
 		if (this.data === undefined) {
 			throw new NotFound('No se encontró el elemento')
 		}

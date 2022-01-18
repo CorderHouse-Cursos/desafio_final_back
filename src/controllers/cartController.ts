@@ -14,8 +14,8 @@ export default {
 		next: NextFunction
 	) => {
 		try {
-			const cart = await cartManager.getById(parseInt(req.params.id))
-			console.log(cart)
+			const cart = await cartManager.getById(req.params.id)
+			
 			res.status(STATUSCODE.OK).json(cart)
 		} catch (err) {
 			console.log(err)
@@ -40,7 +40,7 @@ export default {
 
 	deleteCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			cartManager.delete(parseInt(req.params.id))
+			cartManager.delete(req.params.id)
 			res.status(STATUSCODE.OK).json({ message: 'Carrito eliminado' })
 		} catch (err) {
 			next(err)
@@ -49,18 +49,18 @@ export default {
 	addProductToCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id, productId } = req.params
-			const idProduct = await productManager.getById(parseInt(productId))
-			console.log(idProduct)
-			console.log(id)
+			const product = await productManager.getById(productId)
 			const cart = await cartManager.getById(id)
-			console.log('PRODUCTOS', cart.products)
+			
 			await cartManager.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,
-				products: [idProduct],
+				products: cart.products.length > 0 ? [...cart.products,product] : [product],
 			})
-			res.status(STATUSCODE.OK).json({ message: 'Producto agregado con exito' })
+		
+			return res.status(STATUSCODE.OK).json({message:'Producto agregado con exito'})
 		} catch (err) {
+			console.log(err)
 			next(err)
 		}
 	},
@@ -70,10 +70,19 @@ export default {
 		next: NextFunction
 	) => {
 		try {
-			const productId = parseInt(req.params.productId)
-			const cart = await cartManager.getById(parseInt(req.params.id))
-
-			const cartFiltered = cart.products.filter((pro) => pro.id !== productId)
+			const productId = req.params.productId
+			const cart = await cartManager.getById(req.params.id)
+			
+			const cartFiltered = cart.products.filter((pro) => {
+			
+				if(pro.id){
+					return pro.id !== productId
+				}else{
+					
+					return pro._id?.toString() !== productId
+				}
+				
+			})
 			cartManager.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,

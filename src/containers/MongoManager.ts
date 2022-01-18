@@ -15,7 +15,8 @@ export class MongoManager<T extends IData> {
 	}
 
 	public async getById(id: number | string): Promise<any> {
-		const data = this.model.findOne({ id })
+		const data = await this.model.findOne({ id })
+		
 		return data
 	}
 
@@ -31,12 +32,12 @@ export class MongoManager<T extends IData> {
 	}
 
 	public async update(id: number | string, data: T): Promise<void> {
-		const updated = await this.model.findOneAndUpdate({ id }, data, {
+		const updated = await this.model.updateOne({ id }, data, {
 			new: true,
 		})
 		if (!updated) throw new NotFound('No se encontró el elemento')
 	}
-	public async delete(id: number): Promise<void> {
+	public async delete(id: number | string): Promise<void> {
 		const deleted = await this.model.findOneAndUpdate({ id })
 		if (!deleted) throw new NotFound('No se encontró el elemento')
 	}
