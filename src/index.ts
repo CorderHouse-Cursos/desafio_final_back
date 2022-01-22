@@ -1,6 +1,8 @@
 import app from './app'
-import * as constants from './utils/constants'
+import { PORT, SERVER_URL } from './utils/constants'
 
-app.listen(constants.PORT, () => {
-	console.log(`Server is running in ${constants.SERVER_URL}`)
+
+
+app.listen(PORT, () => {
+	console.log(`Server is running in ${SERVER_URL}`)
 })

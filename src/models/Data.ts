@@ -1,3 +1,5 @@
 export default interface IData {
-	id: number
+	id: number | string
+	_id?:string
 }
+

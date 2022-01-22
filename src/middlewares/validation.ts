@@ -1,8 +1,11 @@
 import { NextFunction, Response, Request } from 'express'
-import { ICarts } from '../models/Carts'
-import { IProducts } from '../models/Products'
-import DataManager from '../services/DataManager'
+import { CartsModel, ICarts } from '../models/Carts'
+import { IProducts, ProductosModel } from '../models/Products'
+import { initManager } from '../utils/manager'
 import STATUSCODE from '../utils/statusCode'
+
+const cartManager = initManager<ICarts>('carts', CartsModel)
+const productManager = initManager<IProducts>('products', ProductosModel)
 
 export const productValidate = (
 	req: Request,
@@ -56,56 +59,62 @@ export const productValidate = (
 
 export const idValidate = (req: Request, res: Response, next: NextFunction) => {
 	if (!req.params.id && typeof req.params.id !== 'number') {
-		res.status(STATUSCODE.OK).json({ message: 'El id debe ser un número' })
+		return res.status(STATUSCODE.OK).json({ message: 'El id debe ser un número' })
 	}
 
 	next()
 }
 
-export const idProductValidate = (
+export const idProductValidate = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const productManager = new DataManager<IProducts>('products')
 	try {
-		productManager.getById(parseInt(req.params.id))
+		const pro = await productManager.getById(req.params.id)
+		if(!pro) throw new Error()
+		next()
 	} catch (err) {
-		res
+		return res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un producto con esa ID' })
 	}
-	next()
+
 }
 
-export const idCartValidate = (
+export const idCartValidate = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const cartManager = new DataManager<ICarts>('carts')
 	try {
-		const cart = cartManager.getById(parseInt(req.params.id))
+		const cart = await cartManager.getById(req.params.id)
+		if(!cart) throw new Error()
 	} catch (err) {
-		res
+		
+		return res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un carrito con esa ID' })
+		
 	}
 
 	next()
 }
-export const idCartProductsAddValidate = (
+export const idCartProductsAddValidate = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const productManager = new DataManager<IProducts>('products')
-	next()
+	
 	try {
-		const pro = productManager.getById(parseInt(req.params.productId))
-		console.log(pro)
+		
+		const pro = await productManager.getById(req.params.productId)
+	
+		if(!pro) throw new Error()
+		
 	} catch (err) {
-		res
+		console.log(err)
+		return res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un producto con ese Id' })
 	}

@@ -7,6 +7,7 @@ import productsRoutes from './routes/v1/productsRoutes'
 import indexRoutes from './routes/v1/indexRoutes'
 import { errorHandler } from './middlewares/errorHandler'
 import path from 'path'
+
 const app = express()
 
 app.use(morgan('dev'))
