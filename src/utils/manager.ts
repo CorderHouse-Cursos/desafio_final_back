@@ -1,10 +1,10 @@
-import { FirebaseManager } from '../containers/FirebaseManager'
-import { MongoManager } from '../containers/MongoManager'
+import { FirebaseManager } from '../containers/FirebaseRepository'
+import { MongoManager } from '../containers/MongoRepository'
 
 import mongoose from 'mongoose'
 
 import IData from '../models/Data'
-import DataManager from '../containers/DataManager'
+import DataManager from '../containers/DataRepository'
 import dotenv from 'dotenv'
 import initDatabase from '../config/database'
 

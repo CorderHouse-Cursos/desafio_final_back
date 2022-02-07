@@ -3,7 +3,7 @@ import { initManager } from '../utils/manager'
 
 const cartManager = initManager<ICarts>('carts', CartsModel)
 
-export class CartsDao {
+export class CartsService {
 	public async getAll(): Promise<ICarts[]> {
 		return await cartManager.getAll()
 	}

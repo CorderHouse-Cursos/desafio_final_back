@@ -3,7 +3,7 @@ import { initManager } from '../utils/manager'
 
 const productManager = initManager<IProducts>('products', ProductosModel)
 
-export class ProductDao {
+export class ProductsService {
 	public async getAll(): Promise<IProducts[]> {
 		return await productManager.getAll()
 	}

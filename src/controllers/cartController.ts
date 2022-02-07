@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express'
 
 import STATUSCODE from '../utils/statusCode'
 
-import { CartsDao, ProductDao } from '../daos'
+import { ProductsService, CartsService } from '../services'
 
-const cartManager = new CartsDao()
-const productManager = new ProductDao()
+const cartService = new CartsService()
+const productService = new ProductsService()
 
 export default {
 	getProductsInCartById: async (
@@ -14,8 +14,8 @@ export default {
 		next: NextFunction
 	) => {
 		try {
-			const cart = await cartManager.getById(req.params.id)
-			
+			const cart = await cartService.getById(req.params.id)
+
 			res.status(STATUSCODE.OK).json(cart)
 		} catch (err) {
 			console.log(err)
@@ -24,7 +24,7 @@ export default {
 	},
 	createCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const idCart = await cartManager.create({
+			const idCart = await cartService.create({
 				id: 1,
 				timestamp: new Date(),
 				products: [],
@@ -40,7 +40,7 @@ export default {
 
 	deleteCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			cartManager.delete(req.params.id)
+			cartService.delete(req.params.id)
 			res.status(STATUSCODE.OK).json({ message: 'Carrito eliminado' })
 		} catch (err) {
 			next(err)
@@ -49,16 +49,19 @@ export default {
 	addProductToCart: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id, productId } = req.params
-			const product = await productManager.getById(productId)
-			const cart = await cartManager.getById(id)
-			
-			await cartManager.update(cart.id, {
+			const product = await productService.getById(productId)
+			const cart = await cartService.getById(id)
+
+			await cartService.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,
-				products: cart.products.length > 0 ? [...cart.products,product] : [product],
+				products:
+					cart.products.length > 0 ? [...cart.products, product] : [product],
 			})
-		
-			return res.status(STATUSCODE.OK).json({message:'Producto agregado con exito'})
+
+			return res
+				.status(STATUSCODE.OK)
+				.json({ message: 'Producto agregado con exito' })
 		} catch (err) {
 			console.log(err)
 			next(err)
@@ -71,19 +74,16 @@ export default {
 	) => {
 		try {
 			const productId = req.params.productId
-			const cart = await cartManager.getById(req.params.id)
-			
+			const cart = await cartService.getById(req.params.id)
+
 			const cartFiltered = cart.products.filter((pro) => {
-			
-				if(pro.id){
+				if (pro.id) {
 					return pro.id !== productId
-				}else{
-					
+				} else {
 					return pro._id?.toString() !== productId
 				}
-				
 			})
-			cartManager.update(cart.id, {
+			cartService.update(cart.id, {
 				id: cart.id,
 				timestamp: cart.timestamp,
 				products: cartFiltered,

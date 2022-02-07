@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express'
 import { IProducts } from '../models/Products'
 
-import { ProductDao } from '../daos'
+import { ProductsService } from '../services'
 import STATUSCODE from '../utils/statusCode'
 import * as constants from '../utils/constants'
 
-const productManager = new ProductDao()
+const productService = new ProductsService()
 export default {
 	getAll: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const products = await productManager.getAll()
+			const products = await productService.getAll()
 
 			res.status(STATUSCODE.OK).json(products)
 		} catch (err) {
@@ -19,7 +19,7 @@ export default {
 	},
 	getById: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const product = await productManager.getById(req.params.id)
+			const product = await productService.getById(req.params.id)
 			res.status(STATUSCODE.OK).json(product)
 		} catch (err) {
 			next(err)
@@ -32,7 +32,7 @@ export default {
 			const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
 			product.foto = path
 			product.timestamp = new Date()
-			await productManager.create(product)
+			await productService.create(product)
 			res
 				.status(STATUSCODE.CREATED)
 				.json({ message: 'Producto creado', product })
@@ -47,7 +47,7 @@ export default {
 			const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
 
 			product.foto = path
-			await productManager.update(parseInt(req.params.id), product)
+			await productService.update(parseInt(req.params.id), product)
 			res
 				.status(STATUSCODE.OK)
 				.json({ message: 'Producto actualizado', product })
@@ -57,7 +57,7 @@ export default {
 	},
 	delete: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			await productManager.delete(parseInt(req.params.id))
+			await productService.delete(parseInt(req.params.id))
 			res.status(STATUSCODE.OK).json({ message: 'Producto eliminado' })
 		} catch (err) {
 			next
