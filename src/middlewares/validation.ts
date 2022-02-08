@@ -1,18 +1,21 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { NextFunction, Response, Request } from 'express'
-import { CartsModel, ICarts } from '../models/Carts'
-import { IProducts, ProductosModel } from '../models/Products'
-import { initManager } from '../utils/manager'
-import STATUSCODE from '../utils/statusCode'
+import { IProduct } from '../models/Products'
+import { ICartRepositories, IProductRepositories } from '../repositories'
 
-const cartManager = initManager<ICarts>('carts', CartsModel)
-const productManager = initManager<IProducts>('products', ProductosModel)
+import STATUSCODE from '../utils/statusCode'
+const manager = require(`../repositories/${'mongo'}Repositories/`)
+
+const cartRepositories: ICartRepositories = new manager.CartsRepositories()
+const productRepositories: IProductRepositories =
+	new manager.ProductRepositories()
 
 export const productValidate = (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const product = req.body as IProducts
+	const product = req.body as IProduct
 	const photo = req.files as Express.Multer.File[]
 
 	if (!product.nombre) {
@@ -59,7 +62,9 @@ export const productValidate = (
 
 export const idValidate = (req: Request, res: Response, next: NextFunction) => {
 	if (!req.params.id && typeof req.params.id !== 'number') {
-		return res.status(STATUSCODE.OK).json({ message: 'El id debe ser un número' })
+		return res
+			.status(STATUSCODE.OK)
+			.json({ message: 'El id debe ser un número' })
 	}
 
 	next()
@@ -71,15 +76,14 @@ export const idProductValidate = async (
 	next: NextFunction
 ) => {
 	try {
-		const pro = await productManager.getById(req.params.id)
-		if(!pro) throw new Error()
+		const pro = await productRepositories.getById(req.params.id)
+		if (!pro) throw new Error()
 		next()
 	} catch (err) {
 		return res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un producto con esa ID' })
 	}
-
 }
 
 export const idCartValidate = async (
@@ -88,14 +92,12 @@ export const idCartValidate = async (
 	next: NextFunction
 ) => {
 	try {
-		const cart = await cartManager.getById(req.params.id)
-		if(!cart) throw new Error()
+		const cart = await cartRepositories.getById(req.params.id)
+		if (!cart) throw new Error()
 	} catch (err) {
-		
 		return res
 			.status(STATUSCODE.NOT_FOUND)
 			.json({ message: 'No existe un carrito con esa ID' })
-		
 	}
 
 	next()
@@ -105,13 +107,10 @@ export const idCartProductsAddValidate = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	
 	try {
-		
-		const pro = await productManager.getById(req.params.productId)
-	
-		if(!pro) throw new Error()
-		
+		const pro = await productRepositories.getById(req.params.productId)
+
+		if (!pro) throw new Error()
 	} catch (err) {
 		console.log(err)
 		return res

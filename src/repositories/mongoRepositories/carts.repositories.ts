@@ -1,11 +1,11 @@
 import { CartsModel, ICart } from '../../models/Carts'
 
-export class CartsRepository {
+export class CartsRepositories {
 	public async getAll(): Promise<ICart[]> {
 		return await CartsModel.find()
 	}
 
-	public async getById(id: string): Promise<ICart | null> {
+	public async getById(id: string | number): Promise<ICart | null> {
 		return await CartsModel.findById(id)
 	}
 
@@ -14,11 +14,11 @@ export class CartsRepository {
 		return await cart.save().then(() => cart._id)
 	}
 
-	public async update(id: string, data: ICart): Promise<void> {
+	public async update(id: string | number, data: ICart): Promise<void> {
 		await CartsModel.findByIdAndUpdate(id, data)
 	}
 
-	public async delete(id: string): Promise<void> {
+	public async delete(id: string | number): Promise<void> {
 		await CartsModel.findByIdAndRemove(id)
 	}
 }

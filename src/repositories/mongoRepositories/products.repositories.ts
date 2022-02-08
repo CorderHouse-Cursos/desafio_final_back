@@ -5,7 +5,7 @@ export class ProductRepositories {
 		return await ProductosModel.find()
 	}
 
-	public async getById(id: string): Promise<IProduct | null> {
+	public async getById(id: string | number): Promise<IProduct | null> {
 		return await ProductosModel.findById(id)
 	}
 
@@ -14,11 +14,11 @@ export class ProductRepositories {
 		return await product.save().then(() => product._id)
 	}
 
-	public async update(id: string, data: IProduct): Promise<void> {
+	public async update(id: string | number, data: IProduct): Promise<void> {
 		await ProductosModel.findByIdAndUpdate(id, data)
 	}
 
-	public async delete(id: string): Promise<void> {
+	public async delete(id: string | number): Promise<void> {
 		await ProductosModel.findByIdAndRemove(id)
 	}
 }

@@ -1,25 +1,29 @@
-import { UserModel, IUser } from '../models/User'
-import { initManager } from '../utils/manager'
+import { IUser } from '../models/User'
+import { IUserRepositories } from '../repositories'
+import { DATABASE } from '../utils/constants'
 
-const userManager = initManager<IUser>('user', UserModel)
+const { UserRepositories } = require(`../repositories/${DATABASE}Repositories/`)
 
 export class UserService {
+	private readonly userRepositories: IUserRepositories = new UserRepositories()
 	public async getAll(): Promise<IUser[]> {
-		return await userManager.getAll()
+		return await this.userRepositories.getAll()
 	}
 	public async getById(id: number | string): Promise<IUser> {
-		return await userManager.getById(id)
+		const user = await this.userRepositories.getById(id)
+		if (!user) throw new Error('User not found')
+		return user
 	}
 	public async create(data: IUser): Promise<number | string> {
-		return await userManager.create(data)
+		return await this.userRepositories.create(data)
 	}
 	public async update(id: string | number, data: IUser): Promise<void> {
-		await userManager.update(id, data)
+		await this.userRepositories.update(id, data)
 	}
 	public async delete(id: number): Promise<void> {
-		await userManager.delete(id)
+		await this.userRepositories.delete(id)
 	}
 	public async getByEmail(email: string): Promise<IUser> {
-		return await userManager.getBy({ email })
+		return await this.userRepositories.getByEmail(email)
 	}
 }

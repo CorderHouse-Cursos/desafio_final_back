@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { IProducts } from '../models/Products'
+import { IProduct } from '../models/Products'
 
 import { ProductsService } from '../services'
 import STATUSCODE from '../utils/statusCode'
@@ -27,7 +27,7 @@ export default {
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const product = req.body as IProducts
+			const product = req.body as IProduct
 			const photo = req.files as Express.Multer.File[]
 			const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
 			product.foto = path
@@ -42,7 +42,7 @@ export default {
 	},
 	update: async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const product = req.body as IProducts
+			const product = req.body as IProduct
 			const photo = req.files as Express.Multer.File[]
 			const path = `${constants.SERVER_URL}/uploads/${photo[0].filename}`
 

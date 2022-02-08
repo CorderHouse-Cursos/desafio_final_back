@@ -1,22 +1,29 @@
-import { IProducts, ProductosModel } from '../models/Products'
-import { initManager } from '../utils/manager'
+import { IProduct } from '../models/Products'
+import { IProductRepositories } from '../repositories'
+import { DATABASE } from '../utils/constants'
 
-const productManager = initManager<IProducts>('products', ProductosModel)
+const {
+	ProductRepositories,
+} = require(`../repositories/${DATABASE}Repositories/`)
 
 export class ProductsService {
-	public async getAll(): Promise<IProducts[]> {
-		return await productManager.getAll()
+	private readonly productRepositories: IProductRepositories =
+		new ProductRepositories()
+	public async getAll(): Promise<IProduct[]> {
+		return await this.productRepositories.getAll()
 	}
-	public async getById(id: number | string): Promise<IProducts> {
-		return await productManager.getById(id)
+	public async getById(id: number | string): Promise<IProduct> {
+		const pro = await this.productRepositories.getById(id)
+		if (!pro) throw new Error('No se encontró el elemento')
+		return pro
 	}
-	public async create(data: IProducts): Promise<number | string> {
-		return await productManager.create(data)
+	public async create(data: IProduct): Promise<number | string> {
+		return await this.productRepositories.create(data)
 	}
-	public async update(id: string | number, data: IProducts): Promise<void> {
-		await productManager.update(id, data)
+	public async update(id: string | number, data: IProduct): Promise<void> {
+		await this.productRepositories.update(id, data)
 	}
 	public async delete(id: number): Promise<void> {
-		await productManager.delete(id)
+		await this.productRepositories.delete(id)
 	}
 }

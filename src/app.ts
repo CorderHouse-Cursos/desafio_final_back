@@ -2,6 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+
 import cartRoutes from './routes/v1/cartRoutes'
 import productsRoutes from './routes/v1/productsRoutes'
 import indexRoutes from './routes/v1/indexRoutes'

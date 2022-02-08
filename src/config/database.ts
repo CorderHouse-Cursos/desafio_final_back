@@ -18,7 +18,6 @@ export const databaseConn = async () => {
 		transform: (doc, converted) => {
 			delete converted._id
 			delete converted.__v
-			
 		},
 	})
 }
@@ -32,13 +31,14 @@ export const firebaseConn = async () => {
 }
 
 export default function init() {
-	console.log(process.env.DATABASE)
 	switch (process.env.DATABASE) {
 		case 'mongo':
 			databaseConn()
+			console.log('Mongo connected')
 			break
 		case 'firebase':
 			firebaseConn()
+			console.log('firebase connected')
 			break
 		default:
 			break
