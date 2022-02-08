@@ -1,4 +1,5 @@
 import IData from './Data'
+import mongoose, { Schema } from 'mongoose'
 
 export interface IUser extends IData {
 	email: string
@@ -45,3 +46,5 @@ const UserSchema = new Schema({
 		required: true,
 	},
 })
+
+export const UserModel = mongoose.model<IUser>('User', UserSchema)

@@ -1,10 +1,10 @@
 import IData from './Data'
-import { IProducts } from './Products'
+import { IProduct } from './Products'
 import mongoose, { Schema } from 'mongoose'
 
-export interface ICarts extends IData {
+export interface ICart extends IData {
 	timestamp: Date
-	products: IProducts[]
+	products: IProduct[]
 }
 
 const CartsSchema = new Schema({
@@ -27,6 +27,6 @@ CartsSchema.set('toJSON', {
 		ret.id = ret._id
 		delete ret._id
 		delete ret.__v
-	}
+	},
 })
-export const CartsModel = mongoose.model<ICarts>('Carts', CartsSchema)
+export const CartsModel = mongoose.model<ICart>('Carts', CartsSchema)

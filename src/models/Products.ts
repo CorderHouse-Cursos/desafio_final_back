@@ -1,7 +1,7 @@
 import IData from './Data'
 import mongoose, { Schema } from 'mongoose'
 
-export interface IProducts extends IData {
+export interface IProduct extends IData {
 	timestamp: Date
 	nombre: string
 	descripcion: string
@@ -46,9 +46,9 @@ ProductsSchema.set('toJSON', {
 		ret.id = ret._id
 		delete ret._id
 		delete ret.__v
-	}
+	},
 })
-export const ProductosModel = mongoose.model<IProducts>(
+export const ProductosModel = mongoose.model<IProduct>(
 	'Productos',
 	ProductsSchema
 )
